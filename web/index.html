@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>速卖通智能上品 Agent</title>
+<link rel="stylesheet" href="/static/app.css?v=11131111" />
+</head>
+<body>
+  <div id="modelBar" style="display:none;position:sticky;top:0;z-index:9997;background:#fef3f2;border-bottom:1px solid #fecdca;color:#b42318;padding:8px 16px;font-size:12.5px;align-items:center;gap:10px;flex-wrap:wrap;">
+    <b>模型异常</b>
+    <span id="modelBarText"></span>
+    <a href="#" id="modelBarSettings" style="color:#b42318;text-decoration:underline;">去设置</a>
+  </div>
+  <div id="browserBar" style="display:none;position:sticky;top:0;z-index:9998;background:#fffaeb;border-bottom:1px solid #fedf89;color:#93370d;padding:9px 16px;font-size:13px;display:none;align-items:center;gap:10px;flex-wrap:wrap;">
+    <b>浏览器未连接</b>
+    <span id="browserBarText">请先运行「2-启动服务.bat」，它会在带调试端口(9222)的 Chrome 里打开页面；并在那个窗口登录妙手ERP、1688。</span>
+    <button class="btn primary small" id="browserLaunch">自动启动浏览器</button>
+    <button class="btn ghost small" id="browserRetry">我已启动，重试</button>
+  </div>
+<div class="app">
+  <!-- 侧边栏 -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">A</div>
+      <div class="brand-text">
+        <strong>智能上品</strong>
+        <span>AliExpress Agent</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-view="chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.9-.9L3 20.5l1.5-4.4A8.4 8.4 0 0 1 12 3.5a8.4 8.4 0 0 1 9 8Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>对话工作台</span>
+      </button>
+      <button class="nav-item" data-view="review">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 11.5 11.5 14 16 8.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12a8 8 0 1 1-3.2-6.4" stroke-linecap="round"/></svg>
+        <span>审核台</span>
+        <em class="nav-badge" id="reviewBadge">0</em>
+      </button>
+      <button class="nav-item" data-view="tasks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 4.5v-2M16 4.5v-2" stroke-linecap="round"/></svg>
+        <span>任务看板</span>
+      </button>
+      <button class="nav-item" data-view="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>设置</span>
+      </button>
+    </nav>
+
+    <div class="side-foot">
+        <div class="driver-card">
+          <div class="driver-row">
+            <span class="dot ok"></span>
+            <span>驱动：RPA 表单提报</span>
+          </div>
+          <div class="driver-sub">全托管无开放接口 · 复用本机登录态</div>
+        </div>
+        <div class="version">v0.3 Mock · 全托管提报</div>
+    </div>
+  </aside>
+
+  <!-- 主区 -->
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">对话工作台</h1>
+        <p id="pageSub">用一句话完成选品、生成内容与全托管提报</p>
+      </div>
+      <div class="top-actions">
+        <div class="chip store-chip">
+          <span class="dot ok"></span>
+          <span id="storeName">Shop1105760319 Store</span>
+          <em class="tag orange">全托管</em>
+        </div>
+        <div class="chip model-chip">
+          <span class="spark">✦</span>
+          <span id="modelName">豆包 Seed 1.6</span>
+        </div>
+        <button class="btn ghost" id="logsBtn" title="查看/提交日志">日志</button>
+        <div class="avatar">兆</div>
+      </div>
+    </header>
+
+    <!-- 对话 -->
+    <section class="view active" id="view-chat">
+      <div class="chat-scroll" id="chatScroll">
+        <div class="chat-inner" id="chatList"></div>
+      </div>
+      <div class="composer-wrap">
+        <div class="suggest" id="suggest">
+          <button data-q="用真实数据选品，保温杯">真实数据跑一遍</button>
+          <button data-q="帮我自动选品上架，厨房类目，挑 3 个">模拟数据选品</button>
+          <button data-q="看看现在的任务进度">查看任务进度</button>
+        </div>
+        <div class="composer">
+          <textarea id="input" rows="1" placeholder="说说你要上什么品，例如：找宠物用品最近 30 天销量靠前的产品"></textarea>
+          <div class="composer-bar">
+            <div class="composer-hint"><kbd>Enter</kbd> 发送 · <kbd>Shift</kbd>+<kbd>Enter</kbd> 换行</div>
+            <button class="btn primary" id="sendBtn">
+              发送
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h13M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 审核台 -->
+    <section class="view" id="view-review">
+      <div class="review-head">
+        <div class="stats">
+          <div class="stat"><span id="statPending">0</span><em>待审核</em></div>
+          <div class="stat"><span id="statApproved">0</span><em>已确认</em></div>
+          <div class="stat"><span id="statSubmitted">0</span><em>审核中</em></div>
+          <div class="stat"><span id="statOnSale">0</span><em>销售中</em></div>
+        </div>
+        <div class="review-actions">
+          <button class="btn primary" id="msApiBtn">① 采集＋英文（一键）</button>
+          <button class="btn ghost" id="msClaimBtn">② 认领到全托管</button>
+          <button class="btn ghost" id="msAttrEnBtn">③ 属性转英文</button>
+          <button class="btn primary" id="publishBtn">④ 提报已确认商品</button>
+          <details class="more-actions">
+            <summary>更多</summary>
+            <div class="more-panel">
+              <button class="btn ghost" id="msPushBtn">填入妙手（兜底）</button>
+              <button class="btn ghost" id="imgTrBtn">图片翻译（AI）</button>
+              <button class="btn ghost" id="imgGenBtn">生成场景图</button>
+              <button class="btn ghost" id="msCollectOnlyBtn">仅采集（不翻）</button>
+              <button class="btn ghost" id="msWriteEnBtn">采集箱写英文</button>
+              <button class="btn ghost" id="msOpenBoxBtn">打开采集箱（手工）</button>
+              <button class="btn ghost" id="msCheckBtn">核对采集箱</button>
+              <button class="btn ghost" id="erpPushBtn">推送店小宝</button>
+              <button class="btn ghost" id="approveAllBtn">全部确认</button>
+            </div>
+          </details>
+        </div>
+      </div>
+      <div class="guide-bar" id="guideBar">
+        <span class="g-step" data-step="1">① 采集</span>
+        <span class="g-step" data-step="2">② 认领</span>
+        <span class="g-step" data-step="3">③ 属性</span>
+        <span class="g-step" data-step="4">④ 发布</span>
+        <span class="g-text" id="guideText">正在读取状态…</span>
+      </div>
+      <div class="review-tools">
+        <button class="btn ghost small" id="selAllBtn">全选本页</button>
+        <button class="btn ghost small" id="delSelBtn">删除所选</button>
+        <span class="tools-hint">勾选后可批量删除；分页见底部</span>
+      </div>
+      <div class="review-list" id="reviewList">
+        <div class="empty">
+          <div class="empty-icon">🗂️</div>
+          <h3>还没有商品草稿</h3>
+          <p>去对话工作台说一句「找 XX 类目新品」，我生成草稿后会出现在这里。</p>
+          <button class="btn primary" onclick="switchView('chat')">去选品</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 任务 -->
+    <section class="view" id="view-tasks">
+      <div class="tasks-wrap">
+        <div class="task-list" id="taskList">
+          <div class="empty">
+            <div class="empty-icon">📋</div>
+            <h3>暂无任务</h3>
+            <p>生成草稿、提报商品时会自动创建任务，可在这里看进度和失败原因。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 设置 -->
+    <section class="view" id="view-settings">
+      <div class="settings-wrap">
+        <div class="card">
+          <div class="card-head">
+            <h2>店铺授权</h2>
+            <span class="tag green">已授权</span>
+          </div>
+          <div class="grid-2">
+            <label class="field"><span>店铺账号</span><input id="setStore" /></label>
+            <label class="field"><span>经营模式</span><input value="AliExpress 全托管（供货商后台）" disabled /></label>
+            <label class="field"><span>授权有效期</span><input id="setExpire" disabled /></label>
+            <label class="field"><span>登录态</span><input value="复用本机浏览器已登录会话（RPA）" disabled /></label>
+          </div>
+          <p class="hint">全托管无商品发布开放接口，采用 Playwright 复用本机登录态操作「发布商品」表单；账号密码不出本机。</p>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>算力接入（客户自备 API）</h2>
+            <span class="tag blue">BYOK</span>
+            <span class="usage-text" id="usageText">今日 0 次 · 预估 ¥0.00</span>
+          </div>
+          <div class="grid-2">
+            <label class="field"><span>服务商</span><select id="setProvider"></select></label>
+            <label class="field"><span>主模型</span><input id="setModel" placeholder="模型名或接入点 ID" /></label>
+            <label class="field"><span>Base URL</span><input id="setBaseUrl" placeholder="https://.../v1" /></label>
+            <label class="field"><span>API Key</span><input id="setApiKey" type="password" placeholder="仅保存在本机" /></label>
+          </div>
+          <div class="row-between">
+            <button class="btn ghost small" id="testLlmBtn">测试连接</button>
+            <span class="test-msg" id="testLlmMsg"></span>
+          </div>
+          <div class="grid-2" style="margin-top:6px">
+            <label class="field"><span>备用服务商（主模型失败自动切换）</span><select id="setFallback"></select></label>
+            <label class="field"><span>备用模型</span><input id="setFallbackModel" placeholder="如 deepseek-chat" /></label>
+          </div>
+          <div class="grid-2" style="margin-top:10px">
+            <label class="field"><span>文案模型（留空继承主模型）</span><input id="setTaskCopy" placeholder="大批量可用便宜模型" /></label>
+            <label class="field"><span>类目模型（留空继承主模型）</span><input id="setTaskCategory" placeholder="类目匹配可用强模型" /></label>
+          </div>
+          <p class="hint">已适配：火山方舟 / 阿里百炼 / 腾讯混元 / DeepSeek / 智谱 / Kimi / OpenAI / 硅基流动 / 本地 Ollama。运营商的 Agent 平台或私有网关选「自定义」，填 OpenAI 兼容地址与 Key 即可；AK/SK 签名类平台需在适配层加一个 auth 扩展。</p>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>数据源与驱动</h2><span class="tag gray">1688 开放平台</span></div>
+          <div class="grid-2">
+            <label class="field"><span>1688 App Key</span><input id="set1688Key" placeholder="待客户申请后填入" /></label>
+            <label class="field"><span>驱动模式</span>
+              <select id="setDriver">
+                <option value="rpa">RPA 表单提报（全托管唯一可选）</option>
+                <option value="api">API 提报（需开放平台资质，预留）</option>
+              </select>
+            </label>
+          </div>
+          <p class="hint">上品流程：RPA 填写「发布商品」→ 存草稿 → 提交审核；SKU 编码在商品列表用「维护SKU编码 → 批量填充」整批写入。</p>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>选品策略</h2><span class="tag blue">Agent 自动执行</span></div>
+          <div class="grid-2">
+            <label class="field"><span>每次自动选品数量</span><input id="setSelCount" type="number" min="1" max="20" /></label>
+            <label class="field"><span>最低 30 天销量</span><input id="setSelSales" type="number" /></label>
+            <label class="field"><span>采购价下限 ¥</span><input id="setSelMin" type="number" step="0.01" /></label>
+            <label class="field"><span>采购价上限 ¥</span><input id="setSelMax" type="number" step="0.01" /></label>
+          </div>
+          <p class="hint">打分口径：30 天销量 40% + 采集人数 30% + 店铺评分 20% + 价格带 10%。你只给类目，Agent 自己选品、自己评分、自己往下生成。</p>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>提示词模板</h2><span class="tag green">已加载</span></div>
+          <div class="grid-2">
+            <label class="field"><span>当前模板</span><input value="速卖通欧美站 · 全托管上架全套方案 v1" disabled /></label>
+            <label class="field"><span>交付项</span><input value="双语标题 / 3套简介 / 五点卖点 / 6图规划 / 词库 / 合规 / 属性" disabled /></label>
+          </div>
+          <p class="hint">生成内容严格按该模板的 7 项交付清单输出，审核台可逐条查看与复制。</p>
+          <button class="btn ghost small" id="viewPromptBtn" style="margin-top:10px">查看提示词全文</button>
+        </div>
+
+        <div class="settings-actions">
+          <button class="btn ghost" id="resetBtn">清空演示数据</button>
+          <button class="btn primary" id="saveBtn">保存设置</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-mask" data-close="1"></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <div>
+        <h3 id="modalTitle">商品方案</h3>
+        <p id="modalSub"></p>
+      </div>
+      <button class="modal-close" id="modalClose">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/static/app.js?v=1117111406"></script>
+</body>
+</html>

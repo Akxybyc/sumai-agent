@@ -1,0 +1,63 @@
+{
+ "store": {
+  "name": "Shop1105760319 Store",
+  "platform": "AliExpress 全托管（跨境卖家中心）",
+  "account": "广东智慧兆能（示例店铺）",
+  "authorized": true,
+  "expire": "2027-10-19"
+ },
+ "driver": {
+  "mode": "rpa",
+  "fallback": false
+ },
+ "llm": {
+  "provider": "deepseek",
+  "base_url": "https://api.deepseek.com/v1",
+  "model": "deepseek-flash",
+  "api_key": "",
+  "fallback": {
+   "enabled": true,
+   "provider": "deepseek",
+   "base_url": "https://api.deepseek.com/v1",
+   "model": "deepseek-chat",
+   "api_key": ""
+  },
+  "tasks": {
+   "copy": "",
+   "vision": "",
+   "category": ""
+  },
+  "fallback_model": "deepseek-chat",
+  "vision_model": "deepseek-flash"
+ },
+ "a1688": {
+  "app_key": "",
+  "authorized": false
+ },
+ "selection": {
+  "count": 3,
+  "min_sales": 3000,
+  "price_min": 5,
+  "price_max": 150,
+  "auto_confirm": true
+ },
+ "prompt": {
+  "template": "速卖通欧美站 · 全托管上架全套方案",
+  "version": "v1",
+  "loaded": true,
+  "file": "prompts/aliexpress_listing_v1.md"
+ },
+ "miaoshou_api": {
+  "app_id": "",
+  "app_secret": "",
+  "base_url": "",
+  "enabled": true
+ },
+ "image_gen": {
+  "provider": "none",
+  "api_key": "",
+  "base_url": "https://ark.cn-beijing.volces.com/api/v3",
+  "model": "doubao-seedream-3-0-t2i-250415",
+  "size": "1024x1024"
+ }
+}
